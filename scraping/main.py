@@ -1,10 +1,10 @@
-from scrapingMain import obtener_enlaces_pagina
+from scrapingLinks import obtenerEnlacesPagina
 
 url = 'https://cryptoslate.com/top-news/'
-enlaces = obtener_enlaces_pagina(url)
+enlaces = obtenerEnlacesPagina(url)
 
 if enlaces:
     for enlace in enlaces:
-        
+        print(enlace)
 else:
-    print("No se encontraron enlaces.")
+    print("No se encontraron enlaces")
