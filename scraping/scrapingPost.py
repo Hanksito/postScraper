@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 from traslationsText import traducir
+import sqlite3
 
 def obtenerContenidoPagina(url):
     try:
@@ -73,7 +74,33 @@ def obtenerContenidoPagina(url):
                 }
                 informacionPost['secciones'].append(seccion_unica)
 
-        return informacionPost
+        
+        conn = sqlite3.connect('../Data/PostData.db')
+        cursor = conn.cursor()
+
+        cursor.execute('''
+            INSERT INTO publicaciones (titulo, subtitulo, imgPost)
+            VALUES (?, ?, ?)
+            ''', (informacionPost['titulo'], informacionPost['subtitulo'], informacionPost['imgPost']))
+
+        post_id = cursor.lastrowid
+
+        for seccion in informacionPost['secciones']:
+            cursor.execute('''
+                INSERT INTO secciones (post_id, titulo)
+                VALUES (?, ?)
+            ''', (post_id, seccion['titulo']))
+
+            seccion_id = cursor.lastrowid
+
+            for parrafo in seccion['parrafos']:
+                cursor.execute('''
+                    INSERT INTO parrafos (seccion_id, texto)
+                    VALUES (?, ?)
+                ''', (seccion_id, parrafo))
+
+        conn.commit()
+        conn.close()
     else:
         print("No se pudo obtener el HTML del post-container.")
 

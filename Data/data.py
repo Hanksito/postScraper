@@ -1,6 +1,5 @@
 import sqlite3
 
-# Conecta a la base de datos (creará el archivo si no existe)
 conn = sqlite3.connect('PostData.db')
 cursor = conn.cursor()
 
